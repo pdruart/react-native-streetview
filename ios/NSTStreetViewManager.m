@@ -10,6 +10,8 @@
 #import <React/RCTViewManager.h>
 #import <React/RCTConvert+CoreLocation.h>
 
+#import "RCTConvert+GMSPanoramaCamera.h"
+
 @import GoogleMaps;
 
 @interface NSTStreetViewManager : RCTViewManager
@@ -23,6 +25,13 @@ RCT_CUSTOM_VIEW_PROPERTY(coordinate, CLLocationCoordinate, GMSPanoramaView) {
   if (json == nil) return;
 
   [view moveNearCoordinate:[RCTConvert CLLocationCoordinate2D:json]];
+}
+
+RCT_CUSTOM_VIEW_PROPERTY(camera, GMSPanoramaCamera, GMSPanoramaView) {
+    if (json == nil) return;
+
+    //  set with no animation
+    view.camera = [RCTConvert GMSPanoramaCamera:json];
 }
 
 RCT_EXPORT_VIEW_PROPERTY(allGesturesEnabled, BOOL)
