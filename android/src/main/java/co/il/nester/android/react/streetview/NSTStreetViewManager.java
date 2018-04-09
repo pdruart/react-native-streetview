@@ -36,4 +36,9 @@ public class NSTStreetViewManager extends SimpleViewManager<NSTStreetView> {
     public void setCoordinate(NSTStreetView view, ReadableMap coordinate) {
         view.setCoordinate(coordinate);
     }
+
+    @ReactProp(name = "camera")
+    public void setCamera(NSTStreetView view, ReadableMap camera) {
+        view.setCamera(camera);
+    }
 }
