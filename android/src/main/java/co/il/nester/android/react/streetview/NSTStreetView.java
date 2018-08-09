@@ -15,6 +15,7 @@ import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
+import com.google.android.gms.maps.model.StreetViewSource;
 import com.google.android.gms.maps.StreetViewPanoramaView;
 import android.content.Context;
 
@@ -38,7 +39,7 @@ public class NSTStreetView extends StreetViewPanoramaView implements OnStreetVie
         panorama.setPanningGesturesEnabled(allGesturesEnabled);
 
         if (coordinate != null) {
-            panorama.setPosition(coordinate);
+            panorama.setPosition(coordinate, StreetViewSource.OUTDOOR);
             if (camera != null) {
                 panorama.setOnStreetViewPanoramaChangeListener(new StreetViewPanorama.OnStreetViewPanoramaChangeListener() {
                     @Override
