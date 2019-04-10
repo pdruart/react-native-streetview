@@ -52,7 +52,7 @@ public class NSTStreetView extends StreetViewPanoramaView implements OnStreetVie
     @Override
     public void requestLayout() {
       super.requestLayout();
-  
+
       // Required for correct requestLayout
       // H/T https://github.com/facebook/react-native/issues/4990#issuecomment-180415510
       post(measureAndLayout);
@@ -88,9 +88,6 @@ public class NSTStreetView extends StreetViewPanoramaView implements OnStreetVie
         if (coordinate == null ) return;
         Double lng = coordinate.getDouble("longitude");
         Double lat = coordinate.getDouble("latitude");
-
-        // saving radius
-        this.radius = coordinate.hasKey("radius") ? coordinate.getInt("radius") : 50;
 
         // Saving to local variable as panorama may not be ready yet (async)
         this.coordinate = new LatLng(lat, lng);
