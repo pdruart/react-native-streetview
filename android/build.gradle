@@ -1,18 +1,25 @@
 apply plugin: 'com.android.library'
 
+def DEFAULT_COMPILE_SDK_VERSION             = 27
+def DEFAULT_BUILD_TOOLS_VERSION             = "27.0.3"
+def DEFAULT_TARGET_SDK_VERSION              = 27
+def DEFAULT_SUPPORT_LIB_VERSION              = 28
+
+def supportLibVersion = rootProject.hasProperty('supportLibVersion') ? rootProject.supportLibVersion : DEFAULT_SUPPORT_LIB_VERSION
+
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion rootProject.hasProperty('compileSdkVersion') ? rootProject.compileSdkVersion : DEFAULT_COMPILE_SDK_VERSION
+    buildToolsVersion rootProject.hasProperty('buildToolsVersion') ? rootProject.buildToolsVersion : DEFAULT_BUILD_TOOLS_VERSION
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion rootProject.hasProperty('targetSdkVersion') ? rootProject.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION
     }
 }
 
 dependencies {
     provided 'com.facebook.react:react-native:+'
-    compile 'com.google.android.gms:play-services-base:+'
-    compile 'com.google.android.gms:play-services-maps:+'
-    api("com.android.support:appcompat-v7:28.0.0")
+    implementation 'com.google.android.gms:play-services-base:+'
+    implementation 'com.google.android.gms:play-services-maps:+'
+    api("com.android.support:appcompat-v7:$supportLibVersion")
 }
