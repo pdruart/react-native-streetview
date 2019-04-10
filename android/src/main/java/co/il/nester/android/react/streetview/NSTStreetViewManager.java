@@ -43,13 +43,8 @@ public class NSTStreetViewManager extends SimpleViewManager<NSTStreetView> {
         view.setCoordinate(coordinate);
     }
 
-
-    @Override
-    public @Nullable
-    Map getExportedCustomDirectEventTypeConstants() {
-        return MapBuilder.of(
-                NSTStreetViewEvent.eventNameForType(NSTStreetViewEvent.ON_ERROR), MapBuilder.of("registrationName", "onError"),
-                NSTStreetViewEvent.eventNameForType(NSTStreetViewEvent.ON_SUCCESS), MapBuilder.of("registrationName", "onSuccess")
-        );
+    @ReactProp(name = "camera")
+    public void setCamera(NSTStreetView view, ReadableMap camera) {
+        view.setCamera(camera);
     }
 }

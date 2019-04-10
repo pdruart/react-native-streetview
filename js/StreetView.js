@@ -21,6 +21,14 @@ const propTypes = {
 		radius: PropTypes.number,
 	}),
 
+	// Camera
+	camera: PropTypes.shape({
+		heading: PropTypes.number,
+		pitch: PropTypes.number,
+		zoom: PropTypes.number,
+		fov: PropTypes.number,
+	}),
+
 	// Allowing user gestures (panning, zooming)
 	allGesturesEnabled: PropTypes.bool,
 

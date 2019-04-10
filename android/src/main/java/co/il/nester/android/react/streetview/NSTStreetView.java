@@ -16,6 +16,9 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
 import com.google.android.gms.maps.StreetViewPanorama;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
+import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
+import com.google.android.gms.maps.model.StreetViewSource;
 import com.google.android.gms.maps.StreetViewPanoramaView;
 import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 import com.google.android.gms.maps.model.StreetViewPanoramaLocation;
@@ -27,8 +30,7 @@ public class NSTStreetView extends StreetViewPanoramaView implements OnStreetVie
     private StreetViewPanorama panorama;
     private Boolean allGesturesEnabled = true;
     private LatLng coordinate = null;
-    // default value
-    private int radius = 50;
+    private StreetViewPanoramaCamera camera = null;
 
     public NSTStreetView(Context context) {
         super(context);
@@ -37,42 +39,42 @@ public class NSTStreetView extends StreetViewPanoramaView implements OnStreetVie
         super.getStreetViewPanoramaAsync(this);
     }
 
+    private final Runnable measureAndLayout = new Runnable() {
+        @Override
+        public void run() {
+          measure(
+              MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+              MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
+          layout(getLeft(), getTop(), getRight(), getBottom());
+        }
+      };
+
     @Override
-    public void onStreetViewPanoramaReady(StreetViewPanorama panorama) {
+    public void requestLayout() {
+      super.requestLayout();
+  
+      // Required for correct requestLayout
+      // H/T https://github.com/facebook/react-native/issues/4990#issuecomment-180415510
+      post(measureAndLayout);
+    }
 
-        this.panorama = panorama;
-        this.panorama.setPanningGesturesEnabled(allGesturesEnabled);
+    @Override
+    public void onStreetViewPanoramaReady(StreetViewPanorama p) {
+        panorama = p;
+        panorama.setPanningGesturesEnabled(allGesturesEnabled);
 
-        final EventDispatcher eventDispatcher = ((ReactContext) getContext())
-                .getNativeModule(UIManagerModule.class).getEventDispatcher();
-
-        this.panorama.setOnStreetViewPanoramaCameraChangeListener(new StreetViewPanorama.OnStreetViewPanoramaCameraChangeListener() {
-            @Override
-            public void onStreetViewPanoramaCameraChange(StreetViewPanoramaCamera streetViewPanoramaCamera) {
-                if (!(streetViewPanoramaCamera.bearing >= 0 ) && coordinate != null) {
-                    eventDispatcher.dispatchEvent(
-                            new NSTStreetViewEvent(getId(), NSTStreetViewEvent.ON_ERROR)
-                    );
-                }
-            }
-        });
-
-        panorama.setOnStreetViewPanoramaChangeListener(new StreetViewPanorama.OnStreetViewPanoramaChangeListener() {
-            @Override
-            public void onStreetViewPanoramaChange(StreetViewPanoramaLocation streetViewPanoramaLocation) {
-                if (streetViewPanoramaLocation != null && streetViewPanoramaLocation.links != null ) {
-                    eventDispatcher.dispatchEvent(
-                            new NSTStreetViewEvent(getId(), NSTStreetViewEvent.ON_SUCCESS)
-                    );
-                } else {
-                    eventDispatcher.dispatchEvent(
-                            new NSTStreetViewEvent(getId(), NSTStreetViewEvent.ON_ERROR)
-                    );
-                }
-            }
-        });
         if (coordinate != null) {
-            this.panorama.setPosition(coordinate, radius);
+            panorama.setPosition(coordinate, StreetViewSource.OUTDOOR);
+            if (camera != null) {
+                panorama.setOnStreetViewPanoramaChangeListener(new StreetViewPanorama.OnStreetViewPanoramaChangeListener() {
+                    @Override
+                    public void onStreetViewPanoramaChange(StreetViewPanoramaLocation location) {
+                        if (location != null) {
+                            panorama.animateTo(camera, 0);
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -93,4 +95,25 @@ public class NSTStreetView extends StreetViewPanoramaView implements OnStreetVie
         // Saving to local variable as panorama may not be ready yet (async)
         this.coordinate = new LatLng(lat, lng);
     }
+
+    float getFloat(ReadableMap map, String property, float defaultValue) {
+        return map.hasKey(property) ? (float) map.getDouble(property)
+                                    : defaultValue;
+    }
+
+    public void setCamera(ReadableMap camera) {
+
+        if (camera == null) return;
+
+        float bearing = getFloat(camera, "heading", 0);
+        float tilt = getFloat(camera, "pitch", 0);
+        float zoom = getFloat(camera, "zoom", 1.0f);
+
+        this.camera = new StreetViewPanoramaCamera.Builder()
+            .bearing(bearing)
+            .tilt(tilt)
+            .zoom(zoom)
+            .build();
+    }
+
 }
