@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C26F5632075876900E5330C /* NSTStreetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C26F5622075876900E5330C /* NSTStreetView.m */; };
 		284C31E31EB6303600A34929 /* NSTStreetViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 284C31E21EB6303600A34929 /* NSTStreetViewManager.m */; };
 		37F62D872075E1A900475882 /* RCTConvert+GMSPanoramaCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F62D862075E1A900475882 /* RCTConvert+GMSPanoramaCamera.m */; };
+		478A56602285C8BD00C207B1 /* NSTStreetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 478A565F2285C8BC00C207B1 /* NSTStreetView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,12 +25,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0C26F5622075876900E5330C /* NSTStreetView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSTStreetView.m; sourceTree = "<group>"; };
-		0C26F564207587E600E5330C /* NSTStreetView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSTStreetView.h; sourceTree = "<group>"; };
 		134814201AA4EA6300B7C361 /* libNSTStreetview.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNSTStreetview.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		284C31E21EB6303600A34929 /* NSTStreetViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTStreetViewManager.m; sourceTree = "<group>"; };
 		37F62D852075E17B00475882 /* RCTConvert+GMSPanoramaCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+GMSPanoramaCamera.h"; sourceTree = "<group>"; };
 		37F62D862075E1A900475882 /* RCTConvert+GMSPanoramaCamera.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+GMSPanoramaCamera.m"; sourceTree = "<group>"; };
+		478A565E2285C8BC00C207B1 /* NSTStreetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTStreetView.h; sourceTree = "<group>"; };
+		478A565F2285C8BC00C207B1 /* NSTStreetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTStreetView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +55,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				478A565E2285C8BC00C207B1 /* NSTStreetView.h */,
+				478A565F2285C8BC00C207B1 /* NSTStreetView.m */,
 				37F62D862075E1A900475882 /* RCTConvert+GMSPanoramaCamera.m */,
 				37F62D852075E17B00475882 /* RCTConvert+GMSPanoramaCamera.h */,
 				284C31E21EB6303600A34929 /* NSTStreetViewManager.m */,
@@ -101,6 +103,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
@@ -119,6 +122,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				284C31E31EB6303600A34929 /* NSTStreetViewManager.m in Sources */,
+				478A56602285C8BD00C207B1 /* NSTStreetView.m in Sources */,
 				37F62D872075E1A900475882 /* RCTConvert+GMSPanoramaCamera.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
