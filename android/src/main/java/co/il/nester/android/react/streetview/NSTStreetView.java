@@ -30,7 +30,12 @@ public class NSTStreetView extends StreetViewPanoramaView implements OnStreetVie
     private StreetViewPanorama panorama;
     private Boolean allGesturesEnabled = true;
     private LatLng coordinate = null;
-    private StreetViewPanoramaCamera camera = null;
+    // default value
+    private int radius = 50;
+    private float tilt = 0 ;
+    private float bearing = 0 ;
+    private Integer zoom = 1;
+    private Boolean started = false;
 
     public NSTStreetView(Context context) {
         super(context);
@@ -59,6 +64,14 @@ public class NSTStreetView extends StreetViewPanoramaView implements OnStreetVie
     }
 
     @Override
+    public void onStreetViewPanoramaReady(StreetViewPanorama panorama) {
+
+      // Required for correct requestLayout
+      // H/T https://github.com/facebook/react-native/issues/4990#issuecomment-180415510
+      post(measureAndLayout);
+    }
+
+    @Override
     public void onStreetViewPanoramaReady(StreetViewPanorama p) {
         panorama = p;
         panorama.setPanningGesturesEnabled(allGesturesEnabled);
@@ -75,7 +88,37 @@ public class NSTStreetView extends StreetViewPanoramaView implements OnStreetVie
                     }
                 });
             }
+        });
+
+        panorama.setOnStreetViewPanoramaChangeListener(new StreetViewPanorama.OnStreetViewPanoramaChangeListener() {
+            @Override
+            public void onStreetViewPanoramaChange(StreetViewPanoramaLocation streetViewPanoramaLocation) {
+                if (streetViewPanoramaLocation != null && streetViewPanoramaLocation.links != null ) {
+                    eventDispatcher.dispatchEvent(
+                            new NSTStreetViewEvent(getId(), NSTStreetViewEvent.ON_SUCCESS)
+                    );
+                } else {
+                    eventDispatcher.dispatchEvent(
+                            new NSTStreetViewEvent(getId(), NSTStreetViewEvent.ON_ERROR)
+                    );
+                }
+            }
+        });
+
+        if (coordinate != null) {
+            this.panorama.setPosition(coordinate, radius);
         }
+
+       long duration = 1000;
+       if (bearing > 0) {
+             StreetViewPanoramaCamera camera = new StreetViewPanoramaCamera.Builder()
+           .zoom(zoom)
+           .tilt(tilt)
+           .bearing(bearing)
+           .build();
+             panorama.animateTo(camera,duration);
+        }
+        this.started = true;
     }
 
     public void setAllGesturesEnabled(boolean allGesturesEnabled) {
@@ -91,26 +134,26 @@ public class NSTStreetView extends StreetViewPanoramaView implements OnStreetVie
 
         // Saving to local variable as panorama may not be ready yet (async)
         this.coordinate = new LatLng(lat, lng);
+         if (this.coordinate != null && this.started  ) {
+            this.panorama.setPosition(this.coordinate, this.radius);
+         }
     }
+    public void setPov(ReadableMap pov) {
 
-    float getFloat(ReadableMap map, String property, float defaultValue) {
-        return map.hasKey(property) ? (float) map.getDouble(property)
-                                    : defaultValue;
+        if (pov == null ) return;
+        tilt = (float) pov.getDouble("tilt");
+        bearing = (float) pov.getDouble("bearing");
+        zoom = pov.getInt("zoom");
+
+        long duration = 1000;
+         if (bearing > 0 && this.started) {
+             StreetViewPanoramaCamera camera = new StreetViewPanoramaCamera.Builder()
+             .zoom(zoom)
+             .tilt(tilt)
+             .bearing(bearing)
+             .build();
+             panorama.animateTo(camera,duration);
+          }
+
     }
-
-    public void setCamera(ReadableMap camera) {
-
-        if (camera == null) return;
-
-        float bearing = getFloat(camera, "heading", 0);
-        float tilt = getFloat(camera, "pitch", 0);
-        float zoom = getFloat(camera, "zoom", 1.0f);
-
-        this.camera = new StreetViewPanoramaCamera.Builder()
-            .bearing(bearing)
-            .tilt(tilt)
-            .zoom(zoom)
-            .build();
-    }
-
 }

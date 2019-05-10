@@ -9,10 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <React/RCTViewManager.h>
 #import <React/RCTConvert+CoreLocation.h>
-
+#import "NSTStreetView.h"
+#import <GoogleMaps/GoogleMaps.h>
 #import "RCTConvert+GMSPanoramaCamera.h"
-
-@import GoogleMaps;
 
 @interface NSTStreetViewManager : RCTViewManager
 @end
@@ -23,9 +22,7 @@ RCT_EXPORT_MODULE()
 
 RCT_CUSTOM_VIEW_PROPERTY(coordinate, CLLocationCoordinate, NSTStreetView) {
   if (json == nil) return;
-  NSInteger radius = [[json valueForKey:@"radius"] intValue];
-
-  [view moveNearCoordinate:[RCTConvert CLLocationCoordinate2D:json] source:kGMSPanoramaSourceOutside];
+  [view moveNearCoordinate:[RCTConvert CLLocationCoordinate2D:json]];
 }
 
 RCT_CUSTOM_VIEW_PROPERTY(camera, GMSPanoramaCamera, GMSPanoramaView) {
